@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.sound.midi.Soundbank;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,6 +16,7 @@ import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,20 +43,31 @@ public class NCSOpenAPI {
 		String learningModuleRegYn = "N";
 		String learningModuleNm = "미개발";
 
-		parsedData.put("ncsDiv",ncsDiv);
-		parsedData.put("categoryCd",categoryCd);
-		parsedData.put("divisionCd",divisionCd);
-		parsedData.put("sectionCd",sectionCd);
-		parsedData.put("subSectionCd",subSectionCd);
-		parsedData.put("comptUnitCd",comptUnitCd);
-		parsedData.put("devYear",devYear);
-		parsedData.put("devVer",devVer);
-		parsedData.put("learningModuleRegYn",learningModuleRegYn);
-		parsedData.put("learningModuleNm",learningModuleNm);
+		parsedData.put("ncsDiv", Arrays.asList(ncsDiv));
+		parsedData.put("categoryCd",Arrays.asList(categoryCd));
+		parsedData.put("divisionCd",Arrays.asList(divisionCd));
+		parsedData.put("sectionCd",Arrays.asList(sectionCd));
+		parsedData.put("subSectionCd",Arrays.asList(subSectionCd));
+		parsedData.put("comptUnitCd",Arrays.asList(comptUnitCd));
+		parsedData.put("devYear",Arrays.asList(devYear));
+		parsedData.put("devVer",Arrays.asList(devVer));
+		parsedData.put("learningModuleRegYn",Arrays.asList(learningModuleRegYn));
+		parsedData.put("learningModuleNm",Arrays.asList(learningModuleNm));
+//
+//		parsedData.put("ncsDiv", ncsDiv);
+//		parsedData.put("categoryCd",categoryCd);
+//		parsedData.put("divisionCd",divisionCd);
+//		parsedData.put("sectionCd",sectionCd);
+//		parsedData.put("subSectionCd",subSectionCd);
+//		parsedData.put("comptUnitCd",comptUnitCd);
+//		parsedData.put("devYear",devYear);
+//		parsedData.put("devVer",devVer);
+//		parsedData.put("learningModuleRegYn",learningModuleRegYn);
+//		parsedData.put("learningModuleNm",learningModuleNm);
 
 
 		//api 3~8번 까지 루프하며 데이터 받아오기
-		for (int i = 3 ; i <= 7; i++){
+		for (int i = 8 ; i <= 8; i++){
 
 			//StringBuilder urlBuilder = new StringBuilder("http://www.ncs.go.kr/api/openapi3.do"); /*URL*/
 			String URL = "http://www.ncs.go.kr/api/openapi"+i+".do";
@@ -110,7 +123,7 @@ public class NCSOpenAPI {
 				System.out.println("Data : " + dataArray);
 				parsedData.clear();
 				parsedData.put("isThereData", false);
-				parsedData.put("ncsClCd", ncsClCd);
+				parsedData.put("ncsClCd",  Arrays.asList(ncsClCd));
 				break;
 			}
 			parsedData.put("isThereData",true);
@@ -122,11 +135,11 @@ public class NCSOpenAPI {
 					break;
 				case 5 : ParseApi5(dataArray, ncsClCd);
 					break;
-				case 6 : ParseApi6(dataArray, ncsClCd);
+				case 6 : ParseApi6(dataArray);
 					break;
-				case 7 : ParseApi7(JSONDataObj, ncsClCd);
+				case 7 : ParseApi7(JSONDataObj);
 					break;
-				case 8 : ParseApi8(dataArray, ncsClCd);
+				case 8 : ParseApi8(dataArray);
 					break;
 			}
 
@@ -135,7 +148,7 @@ public class NCSOpenAPI {
 		return this.parsedData;
 	}
 
-	public static void ParseApi3(JSONArray dataArray, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi3(JSONArray dataArray, String ncsClCd) throws ParseException {
 		//System.out.println(" 받은데이터 ------- \n" + dataArray.toJSONString());
 
 		//버전이 같은 데이터 찾아서 값할당
@@ -145,9 +158,9 @@ public class NCSOpenAPI {
 				String compUnitName = dataObject.get("compUnitName").toString();
 				String compUnitLevel = dataObject.get("compUnitLevel").toString();
 				String comptUnitDef = dataObject.get("compUnitDef").toString();
-				parsedData.put("comptUnitNm",compUnitName);
-				parsedData.put("compUnitLevel",compUnitLevel);
-				parsedData.put("comptUnitDef",comptUnitDef);
+				parsedData.put("comptUnitNm", Arrays.asList(compUnitName.substring(3)));//능력단위명
+				parsedData.put("compUnitLevel", Arrays.asList(compUnitLevel));//능력단위 레벨
+				parsedData.put("comptUnitDef",Arrays.asList(comptUnitDef));//정의
 			}
 
 		}
@@ -155,7 +168,7 @@ public class NCSOpenAPI {
 		System.out.println("---3----------------------------------------------------------\n");
 	}
 
-	public static void ParseApi4(JSONArray dataArray, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi4(JSONArray dataArray, String ncsClCd) throws ParseException {
 		//System.out.println(" 받은데이터 ------- \n" + dataArray.toJSONString());
 
 		//버전이 같은 데이터 찾아서 값할당
@@ -164,15 +177,15 @@ public class NCSOpenAPI {
 			if (dataObject.get("ncsClCd").equals(ncsClCd)){
 				String comptUnitEleNm = dataObject.get("compUnitFactrName").toString();
 				String comptUnitEleCd = dataObject.get("compUnitFactrNo").toString();
-				parsedData.put("comptUnitEleNm",comptUnitEleNm);
-				parsedData.put("comptUnitEleCd",comptUnitEleCd);
+				parsedData.put("comptUnitEleNm",Arrays.asList(comptUnitEleNm.substring(2)));//능력단위 요소명
+				parsedData.put("comptUnitEleCd",Arrays.asList(comptUnitEleCd));//능력단위 코드
 			}
 
 		}
 		System.out.println("---4----------------------------------------------------------\n");
 	}
 
-	public static void ParseApi5(JSONArray dataArray, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi5(JSONArray dataArray, String ncsClCd) throws  ParseException {
 		//System.out.println(" 받은데이터 ------- \n" + dataArray.toJSONString());
 
 		ArrayList<String> suhaengCd = new ArrayList<>();
@@ -209,19 +222,19 @@ public class NCSOpenAPI {
 
 		}//for end
 
-		parsedData.put("suhaengCdCount",suhaengCdCount.toString());
-		parsedData.put("suhaengNm",suhaengNm.toString());
-		parsedData.put("suhaengCd",suhaengCd.toString());
+		parsedData.put("suhaengCdCount",suhaengCdCount);
+		parsedData.put("suhaengNm",suhaengNm);
+		parsedData.put("suhaengCd",suhaengCd);
 
 		//substring(0, know.length()-1) 해주는 이유는 마지막 \n 없애려고
-		parsedData.put("know",know.substring(0, know.length()-1));
-		parsedData.put("skill",skill.substring(0, skill.length()-1));
-		parsedData.put("atti",atti.substring(0, atti.length()-1));
+		parsedData.put("know",Arrays.asList(know.substring(0, know.length()-1)));
+		parsedData.put("skill",Arrays.asList(skill.substring(0, skill.length()-1)));
+		parsedData.put("atti",Arrays.asList(atti.substring(0, atti.length()-1)));
 
 		System.out.println("---5----------------------------------------------------------\n");
 	}
 
-	public static void ParseApi6(JSONArray dataArray, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi6(JSONArray dataArray) throws ParseException {
 		//System.out.println(" 받은데이터 ------- \n" + dataArray.toJSONString());
 
 		StringBuilder consNm120 = new StringBuilder();
@@ -249,15 +262,15 @@ public class NCSOpenAPI {
 		}//for end
 
 		//substring(0, know.length()-1) 해주는 이유는 마지막 \n 없애려고
-		parsedData.put("consNm120",consNm120.substring(0, consNm120.length()-1));
-		parsedData.put("pdsdocNm",pdsdocNm.substring(0, pdsdocNm.length()-1));
-		parsedData.put("equipNm",equipNm.substring(0, equipNm.length()-1));
-		parsedData.put("stuffNm",stuffNm.substring(0, stuffNm.length()-1));
+		parsedData.put("consNm120",Arrays.asList(consNm120.substring(0, consNm120.length()-1)));
+		parsedData.put("pdsdocNm",Arrays.asList(pdsdocNm.substring(0, pdsdocNm.length()-1)));
+		parsedData.put("equipNm",Arrays.asList(equipNm.substring(0, equipNm.length()-1)));
+		parsedData.put("stuffNm",Arrays.asList(stuffNm.substring(0, stuffNm.length()-1)));
 
 		System.out.println("---6----------------------------------------------------------\n");
 	}
 
-	public static void ParseApi7(JSONObject JSONDataObj, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi7(JSONObject JSONDataObj) throws ParseException {
 //		System.out.println(" 받은데이터 ------- \n" + JSONDataObj.toJSONString());
 
 		StringBuilder consNm180 = new StringBuilder();//평가시 고려사항
@@ -284,39 +297,67 @@ public class NCSOpenAPI {
 			JSONObject evalData = (JSONObject) jsonParser.parse(evalDatas.toString());
 			System.out.println(evalData);
 			if(evalData.get("evalTypeCd").equals("01")){//과정평가일때
-				System.out.println(evalData.get("evalMethCd"));
 				int idx = Integer.parseInt(String.valueOf(evalData.get("evalMethCd")))-1;
 				assessItem1Yn.set(idx, "Y");
 			}else if (evalData.get("evalTypeCd").equals("02")){//결과평가일때
 				int idx = Integer.parseInt(String.valueOf(evalData.get("evalMethCd")))-1;
-				System.out.println(evalData.get("evalMethCd"));
 				assessItem2Yn.set(idx, "Y");
 
 			}
 
 		}//for end
-		parsedData.put("consNm180",consNm180.substring(0, consNm180.length()-1));
+		parsedData.put("consNm180",Arrays.asList(consNm180.substring(0, consNm180.length()-1)));
 		parsedData.put("assessItem1Yn",assessItem1Yn);
 		parsedData.put("assessItem2Yn",assessItem2Yn);
 		System.out.println("---7----------------------------------------------------------\n");
 	}
 
-	public static void ParseApi8(JSONArray dataArray, String ncsClCd) throws IOException, ParseException {
+	public static void ParseApi8(JSONArray dataArray) throws ParseException {
 //		System.out.println(" 받은데이터 ------- \n" + dataArray.toJSONString());
-//
-//		StringBuilder consNm180 = new StringBuilder();//평가시 고려사항
-//
-//		JSONDataObj.get("evalData");
-//
-//		for (Object consNm180s: (JSONArray)JSONDataObj.get("csdrData")) {
-//			JSONObject dataObject = (JSONObject) jsonParser.parse(consNm180s.toString());
-//
-//			consNm180.append("- "+dataObject.get("defText").toString()+"\n");
-//		}//for end
-//
-//		parsedData.put("consNm180",consNm180.substring(0, consNm180.length()-1));
-//
-//		System.out.println("---8----------------------------------------------------------\n");
+
+		ArrayList useYn160 = new ArrayList();//Y
+		ArrayList seqNo = new ArrayList();
+		for(int i =0; i<10; i++){
+			useYn160.add("N");
+			seqNo.add(Integer.toString(i+1));
+		}
+
+		String mainDomainString = "의사소통능력, 수리능력, 문제해결능력, 자기개발능력, 자원관리능력, 대인관계능력, 정보능력, 기술능력, 조직이해능력, 직업윤리";
+		String subDomainString  =   "문서이해능력, 문서작성능력, 경청능력, 의사표현능력, 기초외국어능력\n" +
+									"기초연산능력, 기초통계능력, 도표분석능력, 도표작성능력\n" +
+									"사고력, 문제처리능력\n" +
+									"자아인식능력, 자기관리능력, 경력개발능력\n" +
+									"시간관리능력, 예산관리능력, 물적자원관리능력, 인적자원관리능력\n" +
+									"팀웍능력, 리더십능력, 갈등관리능력, 협상능력, 고객서비스능력\n" +
+									"시간관리능력, 예산관리능력, 물적자원관리능력, 인적자원관리능력\n" +
+									"기술이해능력, 기술선택능력, 기술적용능력\n" +
+									"국제감각, 조직체제이해능력, 경영이해능력, 업무이해능력\n" +
+									"근로윤리, 공동체윤리";
+		List mainDomain = Arrays.asList(mainDomainString.split(", ")); //직업기초능력
+		List subDomain = Arrays.asList(subDomainString.replace(", ",",").split("\n"));//하위능력
+
+		for(Object aa :subDomain){
+			System.out.println(aa.toString());
+
+		}
+
+		//[의사소통능력,  수리능력,  문제해결능력,  자기개발능력,  자원관리능력,  대인관계능력,  정보능력,  기술능력,  조직이해능력,  직업윤리]
+		//System.out.println(mainDomain.toString());
+
+		for (Object data: dataArray) {
+			JSONObject dataObject = (JSONObject) jsonParser.parse(data.toString());
+			int idx = Integer.parseInt(dataObject.get("mainNo").toString())-1;
+			useYn160.set(idx, "Y");
+
+			System.out.println(dataObject.get("mainName")+" "+dataObject.get("mainNo")+" "+dataObject.get("subName")+" "+dataObject.get("subNo"));
+
+		}//for end
+		parsedData.put("useYn160",useYn160);
+		parsedData.put("seqNo",seqNo);
+		parsedData.put("mainDomain",mainDomain);
+		parsedData.put("subDomain",subDomain);
+
+		System.out.println("---8----------------------------------------------------------\n");
 	}
 
 }//class end
